@@ -1,32 +1,41 @@
 import { Button, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
+
+const CountContext = createContext();
+
 
 function App(){
   const [counter, setCounter] = useState(0);
   return(
-    <div style={{display:"flex",
-    justifyContent:"center"}}>
-      <Card style={{
-        width:600,
-        }}>
-        <Typography textAlign={'center'}>Welcome to counter game</Typography>
-        <Buttons counter = {counter} setCounter = {setCounter}/>
-        <CounterComponent counter = {counter}/>
-      </Card>
-    </div>
+    <CountContext.Provider value={{
+      counter: counter,
+      setCounter: setCounter
+    }}>
+      <div style={{display:"flex",
+      justifyContent:"center"}}>
+        <Card style={{
+          width:600,
+          }}>
+          <Typography textAlign={'center'}>Welcome to counter game</Typography>
+          <Buttons />
+          <CounterComponent />
+        </Card>
+      </div>
+    </CountContext.Provider>
   )
 }
 
-function Buttons({counter, setCounter}){
+function Buttons(){
   return(
     <div style={{display:"flex", justifyContent:"space-between"}}>
-      <Increase counter={counter} setCounter={setCounter}/>
-      <Decrease setCounter={setCounter}/>
+      <Increase />
+      <Decrease />
     </div>
   )
 }
-function Increase({counter, setCounter}){
+function Increase(){
+  const {counter, setCounter} = useContext(CountContext);
   return (
     <div>
       <Button variant='contained' onClick={()=>{return setCounter(counter+1)}}>Increase Counter</Button>
@@ -34,7 +43,8 @@ function Increase({counter, setCounter}){
   )
 }
 
-function Decrease({setCounter}){
+function Decrease(){
+  const { counter, setCounter } = useContext(CountContext);
   return(
     <div>
       <Button variant='contained' onClick={(counter)=>{return setCounter((counter)=>counter-1)}}>Decrease Counter</Button>    
@@ -42,7 +52,8 @@ function Decrease({setCounter}){
   )
 }
 
-function CounterComponent({counter}){
+function CounterComponent(){
+  const {counter} = useContext(CountContext);
   return(
     <div >
       <Typography textAlign={'center'} variant='h4'>{counter}</Typography>
