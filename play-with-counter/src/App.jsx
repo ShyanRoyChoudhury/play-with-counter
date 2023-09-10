@@ -1,17 +1,15 @@
 import { Button, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import { createContext, useContext, useState } from 'react';
+import {RecoilRoot, atom, useRecoilValue, useSetRecoilState} from 'recoil';
 
 const CountContext = createContext();
 
 
 function App(){
-  const [counter, setCounter] = useState(0);
+  
   return(
-    <CountContext.Provider value={{
-      counter: counter,
-      setCounter: setCounter
-    }}>
+    <RecoilRoot>
       <div style={{display:"flex",
       justifyContent:"center"}}>
         <Card style={{
@@ -22,7 +20,7 @@ function App(){
           <CounterComponent />
         </Card>
       </div>
-    </CountContext.Provider>
+      </RecoilRoot>
   )
 }
 
@@ -35,16 +33,18 @@ function Buttons(){
   )
 }
 function Increase(){
-  const {counter, setCounter} = useContext(CountContext);
+  const setCounter = useSetRecoilState(countState);
+  //const {counter, setCounter} = useContext(CountContext);
   return (
     <div>
-      <Button variant='contained' onClick={()=>{return setCounter(counter+1)}}>Increase Counter</Button>
+      <Button variant='contained' onClick={()=>{return setCounter(counter=>counter+1)}}>Increase Counter</Button>
     </div>
   )
 }
 
 function Decrease(){
-  const { counter, setCounter } = useContext(CountContext);
+  const setCounter = useSetRecoilState(countState);
+  //const { counter, setCounter } = useContext(CountContext);
   return(
     <div>
       <Button variant='contained' onClick={(counter)=>{return setCounter((counter)=>counter-1)}}>Decrease Counter</Button>    
@@ -53,7 +53,9 @@ function Decrease(){
 }
 
 function CounterComponent(){
-  const {counter} = useContext(CountContext);
+
+  const counter = useRecoilValue(countState)
+  //const {counter} = useContext(CountContext);
   return(
     <div >
       <Typography textAlign={'center'} variant='h4'>{counter}</Typography>
@@ -61,3 +63,9 @@ function CounterComponent(){
   )
 }
 export default App;
+
+
+const countState = atom({
+  key: 'countState',
+  default:0,
+})
